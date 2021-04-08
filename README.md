@@ -1,5 +1,5 @@
 # OPB-Ne_se_ena_spletna_trgovina
-Projekt za predmet OPB.
+Projekt za predmet OPB.<br/>
 Avtor: Martin Dolenc
 
 # Opis aplikacije
