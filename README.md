@@ -8,4 +8,4 @@ Ideja za aplikacijo je zelo preprosta spletna trgovina, kjer lahko uporabniki na
 
 <br/>
 
-![ER-Diagram 3 0](https://user-images.githubusercontent.com/28756327/119243189-d6cfd300-bb64-11eb-8965-03e246a40b12.png)
+![ER-Diagram 3 0](https://user-images.githubusercontent.com/28756327/119243261-6a090880-bb65-11eb-94d0-6bda434fee8b.png)
