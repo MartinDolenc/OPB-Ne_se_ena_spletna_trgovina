@@ -1,0 +1,104 @@
+%rebase('osnova.html', naslov='Izdelek {}'.format(x))
+<style>
+    #podatki{
+    width:100%;
+    }
+
+    #razsirjene{
+    padding: 13px;
+    }
+</style>
+
+%if napaka:
+    <div class="alert alert-warning">
+        <strong>Pozor!</strong> {{napaka}}
+    </div>
+%end
+
+
+%for (id,ime,proizvajalec,kategorija,ocena,popust,cena) in izdelek:
+    <div class="row">
+        <div class="col">
+          <h1 style="display:inline-block">{{ime}}</h1>
+          % if username:
+            <div class="row float-right">
+                % if admin:
+                    <a href="/uredi_izdelek/{{x}}/" class="btn btn-dark btn-md active" role="button" aria-pressed="true" style="margin-right: 5px; height: 39px;">Uredi</a>
+                % end
+                <form action="/dodaj_med_zazeljene/{{id}}/" method="POST">
+                   % if najljubsi:
+                       <button type="submit" name="dodaj" value="ne" class="btn btn-dark btn-md active" style="margin-right: 5px; height: 39px;">Odstrani iz zaželjenih</button>
+                   % else:
+                       <button type="submit" name="dodaj" value="ja" class="btn btn-dark btn-md active" style="margin-right: 5px; height: 39px;">Dodaj med zaželjene</button>
+                   % end
+                </form>
+				<form action="/dodaj_v_kosaro/{{id}}/" method="POST">
+					% if vKosari:
+						<button type="submit" name="dodaj" value="da" class="btn btn-dark btn-md active" style="margin-right: 5px; height: 39px;">Odstrani iz košare</button>
+					% else:
+						<button type="submit" name="dodaj" value="da" class="btn btn-dark btn-md active" style="margin-right: 5px; height: 39px;">Dodaj v košaro</button>
+					% end
+                </form>
+            </div>
+          %end
+        </div>
+    </div>
+    <div class="container rounded shadow" style="background-color: #f2f2f2;margin-bottom:20px">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel-body">
+                    <table id="podatki">
+                        <tr id="razsirjene">
+                            <th id="razsirjene">Ime: </th>
+                            <th class="font-weight-normal" id="razsirjene">{{ime}} </th>
+                            <th id="razsirjene">Proizvajalec: </th>
+                            <th class="font-weight-normal" id="razsirjene">{{proizvajalec}} </th>
+                            <th id="razsirjene">Kategorija: </th>
+                            <th class="font-weight-normal" id="razsirjene">{{kategorija}} </th>
+                        </tr>
+                        <tr id="razsirjene">
+                            <th id="razsirjene">Ocena: </th>
+                            <th class="font-weight-normal" id="razsirjene">{{ocena}} </th>
+                            <th id="razsirjene">Popust: </th>
+                            <th class="font-weight-normal" id="razsirjene">{{popust}} </th>
+                            <th id="razsirjene">Cena: </th>
+                            <th class="font-weight-normal" id="razsirjene">{{cena}} </th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+%end
+
+<div class="row">
+        <div class="col">
+          <h1 style="display:inline-block">Podobno:</h1>
+        </div>
+    </div>
+
+<table class="table table-bordered table-hover" style="margin-top:30px;">
+ <thead class="thead-light">
+	<tr>
+	   <th scope="col">Ime</th>
+	   <th scope="col">Proizvajalec</th>
+	   <th scope="col">Kategorija</th>
+	   <th scope="col">Ocena</th>
+	   <th scope="col">Popust</th>
+	   <th scope="col">Cena</th>
+	</tr>
+  </thead>
+  <tbody>
+  %for (id,ime,proizvajalec,kategorija,ocena,popust,cena) in izdelki:
+              <tr>
+                 <td><a href="/izdelek/{{id}}/">{{ime}}</a></td>
+                 <td>{{proizvajalec}}</td>
+                 <td>{{kategorija}}</td>
+                 <td>{{ocena}}</td>
+				 <td>{{popust}}</td>
+				 <td>{{cena}}</td>
+              </tr>
+            %end
+  </tbody>
+</table>
+</body>

@@ -1,0 +1,53 @@
+%rebase('osnova.html', naslov='Nakup')
+
+<h1>Zaključi nakup</h1>
+
+<style>
+    #podatki{
+    width:100%;
+    }
+
+    #razsirjene{
+    padding: 13px;
+    }
+</style>
+
+<body>
+%if napaka:
+        <div class="alert alert-warning">{{napaka}}</div>
+%end
+
+<div class="container rounded shadow" style="background-color: #f2f2f2;margin-bottom:20px">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel-body">
+				<table id="podatki">
+					<tr id="razsirjene">
+						<th id="razsirjene">Število izdelkov: </th>
+						<th class="font-weight-normal" id="razsirjene">{{stevilo_izdelkov}} </th>
+						<th id="razsirjene">Cena brez popusta: </th>
+						<th class="font-weight-normal" id="razsirjene">{{brez_popusta}} </th>
+						<th id="razsirjene">Cena z popustom: </th>
+						<th class="font-weight-normal" id="razsirjene">{{z_popustom}} </th>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<form action="/nakup" method="POST">
+	  <div class="form-group col-md-6">
+            <label>Način plačila</label>
+            <select type="text" name="nacin_placila" value="" class="form-control" required="true">
+                <option value="" selected disabled hidden>Način plačila</option>
+					<option>Gotovina</option>
+					<option>Kartica</option>
+					<option>Poker žetoni</option>
+					<option>Monopoly money</option>
+            </select>
+        </div>
+      <button type="submit" class="btn btn-primary">Zaključi nakup</button>
+  </form>
+
+</body>

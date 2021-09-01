@@ -1,0 +1,7 @@
+db = 'sem2019_martind'
+host = 'baza.fmf.uni-lj.si'
+#user = 'javnost'
+user = 'martind'
+#password = 'javnogeslo'
+password = 't9otmgbg'
+link = 'http://baza.fmf.uni-lj.si/phppgadmin/'

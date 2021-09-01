@@ -1,0 +1,196 @@
+<html>
+<head>
+  <title>{{naslov}}</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Custom styles for this template -->
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="/static/css/custom.css" rel="stylesheet">
+
+    <style>
+    th {
+      position: sticky;
+      top: 0;
+    }
+    </style>
+</head>
+<body>
+
+%if napakaO:
+        <div class="alert alert-warning">{{napakaO}}</div>
+%end
+
+<div class="container">
+  <header class="blog-header py-3">
+    <div class="row flex-nowrap justify-content-between align-items-center">
+      <div class="col-4 text-center">
+      </div>
+      <div class="col-4 text-center">
+        <a class="blog-header-logo text-dark" href="/">Spletna trgovina</a>
+      </div>
+      <div class="col-4 d-flex justify-content-end align-items-center" style="cursor:pointer;">
+		% if username:
+            % if admin:
+                <a class="nav-item dropdown">
+                  <a class="dropdown-toggle col-4 text-center text-dark" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {{username}}
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/zazeljeni">Zaželjeni izdelki</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/">Dodaj izdelek</a>
+                    <div class="dropdown-divider"></div>
+                    <button type="button" class="dropdown-item" data-toggle="modal" data-target="#exampleModal1">
+                      Izbriši račun
+                    </button>
+                  </div>
+                </a>
+            % else:
+                <a class="nav-item dropdown">
+                  <a class="dropdown-toggle col-4 text-center text-dark" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {{username}}
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/zazeljeni">Zaželjeni izdelki</a>
+                    <div class="dropdown-divider"></div>
+                    <!-- Button trigger modal -->
+                    <button type="button" class="dropdown-item" data-toggle="modal" data-target="#exampleModal">
+                      Postani admin
+                    </button>
+                    <div class="dropdown-divider"></div>
+                    <button type="button" class="dropdown-item" data-toggle="modal" data-target="#exampleModal1">
+                      Izbriši račun
+                    </button>
+                  </div>
+                </a>
+            % end
+			<a class="btn btn-sm btn-outline-secondary" href="/Logout">Odjava</a>
+		% else:
+			<a class="btn btn-sm btn-outline-secondary" href="/Login">Prijava</a>
+		% end
+      </div>
+    </div>
+  </header>
+  
+  <!-- Modal -->
+	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title" id="exampleModalLabel">Postani admin</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Zapri">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <form class="form-signin" action="/postani_admin" method="post">
+		  <div class="modal-body">
+			<input type="password" id="inputPassword" class="form-control" placeholder="Specialno admin geslo" name="adminPassword">
+		  </div>
+		  <div class="modal-footer">
+			<button class="btn btn-primary" type="submit">Postani admin</button>
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Zapri</button>
+		  </div>
+		  </form>
+		</div>
+	  </div>
+	</div>
+
+    <!-- Modal -->
+	<div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title" id="exampleModalLabel1">Izbris računa</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Zapri">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <form class="form-signin" action="/postani_admin" method="post">
+		  <div class="modal-body">
+			<input type="password" id="inputPassword1" class="form-control" placeholder="Vnesite svoje geslo" name="password">
+		  </div>
+		  <div class="modal-footer">
+			<button class="btn btn-primary" type="submit">Izbriši</button>
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Zapri</button>
+		  </div>
+		  </form>
+		</div>
+	  </div>
+	</div>
+
+  <div class="navbar py-1 mb-2">
+    <nav class="nav d-flex justify-content-between">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-muted" id="navbarDropdown" style="cursor: pointer;" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Kategorije
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          %for kategorija in kategorije:
+            <a class="dropdown-item" href="/kategorije/{{kategorija}}/">{{kategorija}}</a>
+          %end
+        </div>
+      </li>
+	  <!-- Search form -->
+	<form class="form-inline" method="post">
+		<input class="form-control form-control-sm mr-3 w-25" type="text" placeholder="Išči" aria-label="Search" name="search" style="height:37px;">
+		<i class="fas fa-search" aria-hidden="true"></i>
+		<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Najdi</button>
+	</form>
+    </nav>
+	<a class="btn btn-sm btn-outline-secondary" href="/kosara">Vaša Košara</a>
+  </div>
+  
+
+
+{{!base}}
+
+</div>
+
+<!-- jQuery library -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+
+<!-- Popper -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+
+<!-- Latest compiled and minified Bootstrap JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+<!-- Initialize Bootstrap functionality -->
+<script>
+// Initialize tooltip component
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+
+// Initialize popover component
+$(function () {
+  $('[data-toggle="popover"]').popover()
+})
+
+// When the user scrolls down 20px from the top of the document, show the button
+window.onscroll = function() {scrollFunction()};
+
+function scrollFunction() {
+  if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+    document.getElementById("myBtn").style.display = "block";
+  } else {
+    document.getElementById("myBtn").style.display = "none";
+  }
+}
+
+// When the user clicks on the button, scroll to the top of the document
+function topFunction() {
+  document.body.scrollTop = 0; // For Safari
+  document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+}
+</script>
+  <script src="/static/js/bootstrap.js"></script>
+  
+<button onclick="topFunction()" id="myBtn" title="Go to top">Vrni se na začetek</button>
+
+</body>
+</html>

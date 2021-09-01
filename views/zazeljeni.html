@@ -1,0 +1,36 @@
+%rebase('osnova.html', naslov='Zaželjeni izdelki')
+
+<h1>Zaželjeni izdelki</h1>
+
+<body>
+%if napaka:
+        <div class="alert alert-warning">{{napaka}}</div>
+%end
+
+%if izrisi:
+<table class="table table-bordered table-hover" style="margin-top:30px;">
+ <thead class="thead-light">
+	<tr>
+	   <th scope="col">Ime</th>
+	   <th scope="col">Proizvajalec</th>
+	   <th scope="col">Kategorija</th>
+	   <th scope="col">Ocena</th>
+	   <th scope="col">Popust</th>
+	   <th scope="col">Cena</th>
+	</tr>
+  </thead>
+  <tbody>
+  %for (id,ime,proizvajalec,kategorija,ocena,popust,cena) in izdelki:
+              <tr>
+                 <td><a href="/izdelek/{{id}}/">{{ime}}</a></td>
+                 <td>{{proizvajalec}}</td>
+                 <td>{{kategorija}}</td>
+                 <td>{{ocena}}</td>
+				 <td>{{popust}}</td>
+				 <td>{{cena}}</td>
+              </tr>
+            %end
+  </tbody>
+</table>
+</body>
+%end
