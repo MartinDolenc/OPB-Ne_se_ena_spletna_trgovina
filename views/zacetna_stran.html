@@ -1,0 +1,42 @@
+%rebase('osnova.html', naslov='Zacetna stran')
+
+<div>
+  <div class="jumbotron p-4 p-md-5 text-white rounded bg-dark" style="float:left; width:38%;">
+    <div class="col-md-6 px-0">
+      <h1 class="display-4 font-italic">Priporočeno za vas</h1>
+      <p class="lead my-3">Izdelek.</p>
+      <p class="lead mb-0"><a href="/izdelek/1" class="text-white font-weight-bold">Več</a></p>
+    </div>
+  </div>
+
+  <div class="row mb-2 no-gutters border rounded overflow-hidden shadow-sm h-md-600 position-relative" style="float:right; width:58%; border:1px solid; padding: 20px;">
+    <h1>Najpopularnejši izdelki:</h1>
+    <div style="height:500px;overflow-y:auto;overflow-y:auto;">
+        <table class="table table-bordered table-hover">
+           <thead class="thead-light">
+            <tr>
+               <th scope="col">Ime</th>
+               <th scope="col">Proizvajalec</th>
+               <th scope="col">Kategorija</th>
+               <th scope="col">Ocena</th>
+			   <th scope="col">Popust</th>
+			   <th scope="col">Cena</th>
+            </tr>
+            </thead>
+			<tbody>
+            %for (id,ime,proizvajalec,kategorija,ocena,popust,cena) in izdelki:
+              <tr>
+                 <td><a href="/izdelek/{{id}}/">{{ime}}</a></td>
+                 <td>{{proizvajalec}}</td>
+                 <td>{{kategorija}}</td>
+                 <td>{{ocena}}</td>
+				 <td>{{popust}}</td>
+				 <td>{{cena}}</td>
+              </tr>
+            %end
+            </tbody>
+        </table>
+    </div>
+  </div>
+</div>
+

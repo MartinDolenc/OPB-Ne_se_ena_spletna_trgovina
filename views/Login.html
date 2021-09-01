@@ -1,0 +1,24 @@
+%rebase('Form osnova.html', naslov='Prijava')
+
+<body class="text-center">
+<form class="form-signin" method="post">
+  <a href="/">
+  <img class="mb-4" src="/static/vozicek.png" alt="" style="width:128px;height:128px;">
+  </a>
+  <h1 class="h3 mb-3 font-weight-normal">Prijava</h1>
+  <label for="inputUsername" class="sr-only">Uporabniško ime</label>
+  <input type="username" id="inputUsername" class="form-control" placeholder="Uporabniško ime" name="username" required autofocus>
+  <label for="inputPassword" class="sr-only">Geslo</label>
+  <input type="password" id="inputPassword" class="form-control" placeholder="Geslo" name="password" required>
+  <div class="checkbox mb-3">
+	<label>
+	  <input type="checkbox" value="remember-me"> Zapomni si me
+	</label>
+  </div>
+  %if napaka:
+        <div class="alert alert-warning">{{napaka}}</div>
+  %end
+  <button class="btn btn-lg btn-primary btn-block" type="submit">Prijava</button>
+  <a class="btn btn-lg btn-primary btn-block" href="/Register">Registracija</a>
+</form>
+</body>

@@ -1,0 +1,39 @@
+%rebase('osnova.html', naslov='Urejanje izdelka {}'.format(x))
+
+%if napaka:
+  <p class="opozorilo">{{napaka}}</p>
+%end
+
+  <form action="/uredi_izdelek/{{x}}/" method="POST">
+      <div class="form-group">
+        <label>ID</label>
+        <input type="integer" name="id" value="{{id}}" class="form-control" placeholder="{{id}}" disabled>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>Ime</label>
+            <input type="text" name="ime" value="{{ime}}" class="form-control" placeholder="{{ime}}" required="true">
+        </div>
+        <div class="form-group col-md-6">
+            <label>Proizvajalec</label>
+            <input type="text" name="proizvajalec" value="{{proizvajalec}}" class="form-control" placeholder="{{proizvajalec}}" required="true">
+        </div>
+      </div>
+      <div class="form-group">
+            <label>Kategorija</label>
+            <input type="text" name="kategorija" value="{{kategorija}}" class="form-control" placeholder="{{kategorija}}" required="true">
+      </div>
+      <div class="form-group">
+        <label>Ocena</label>
+        <input type="number" name="ocena" value="{{ocena}}" class="form-control" placeholder="{{ocena}}" required="true">
+      </div>
+      <div class="form-group">
+        <label>Popust</label>
+        <input type="number" name="popust" value="{{popust}}" class="form-control" placeholder="{{popust}}" required="true">
+      </div>
+      <div class="form-group">
+        <label>Cena</label>
+        <input type="number" name="cena" value="{{cena}}" class="form-control" placeholder="{{cena}}" required="true">
+      </div>
+      <button type="submit" class="btn btn-primary">Uredi</button>
+  </form>
