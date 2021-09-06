@@ -16,6 +16,8 @@ psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)  # se znebimo pro
 
 import hashlib  # računanje MD5 kriptografski hash za gesla
 
+import json     # za shranjevanje košare
+
 # odkomentiraj, če želiš sporočila o napakah
 debug(True)
 
@@ -89,6 +91,20 @@ def postani_admin():
         else:
             admin = is_admin(username)
             return template('zacetna_stran.html', kategorije=kategorije, napakaO="Vnesili ste napačno geslo.", username=username, admin=admin, izdelki=izdelki)
+
+
+def vsebina_kosare():
+
+    """Funkcija za pridobivanje vsebine košarice kot množice."""
+
+    kosara = request.get_cookie('kosara', secret=secret)
+
+    if kosara is None:
+        return set()
+    try:
+        return set(json.loads(kosara))
+    except json.JSONDecodeError:
+        return set()
 
 # Pomožne funkcije
 ######################################################################
@@ -257,19 +273,9 @@ def dodaj_med_zazeljene(x):
 
 @post('/dodaj_v_kosaro/:x/')
 def dodaj_v_kosaro(x):
-    kosara = request.get_cookie('kosara', secret=secret)
-    if kosara is None:
-        kosara = str(x)
-    elif x in kosara:
-        kosara = kosara.replace(x, "")
-        kosara = kosara.replace(" , ", " ")
-        kosara = kosara.strip(", ")
-        if kosara == "":
-            response.delete_cookie('kosara', path='/', secret=secret)
-    else:
-        kosara += ", " + str(x)
-
-    response.set_cookie('kosara', kosara, path='/', secret=secret)
+    kosara = vsebina_kosare()
+    kosara.symmetric_difference_update({x})  # doda v košaro, če ga še ni, sicer ga odstrani
+    response.set_cookie('kosara', json.dumps(list(kosara)), path='/', secret=secret)
     redirect("/izdelek/{}/".format(x))
 
 
@@ -277,7 +283,7 @@ def dodaj_v_kosaro(x):
 def kosara():
     username = get_user()
     admin = is_admin(username)
-    kosara = request.get_cookie('kosara', secret=secret)
+    kosara = vsebina_kosare()
     izdelki = []
 
     if kosara is None:
@@ -286,7 +292,7 @@ def kosara():
     else:
         napaka = None
         izrisi = True
-        cur.execute("SELECT * FROM izdelek WHERE id IN (" + kosara + ")")
+        cur.execute("SELECT * FROM izdelek WHERE id IN ({})".format(", ".join("%s" for _ in kosara)), tuple(kosara))
         izdelki = cur.fetchall()
 
     brez_popusta = 0
