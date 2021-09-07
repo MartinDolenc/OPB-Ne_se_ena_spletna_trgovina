@@ -72,25 +72,27 @@ def postani_admin():
     password = request.forms.password
     cur.execute("SELECT * FROM izdelek ORDER BY ocena DESC")
     izdelki = cur.fetchall()
+    cur.execute("SELECT id, ime FROM izdelek ORDER BY RANDOM() LIMIT 1")
+    randIzdelek = cur.fetchone()
 
-    # za začetno stran potrebuješ skupni seštevek:
     if password == "":
         if adminPassword == adminGeslo:
             cur.execute("UPDATE uporabnik SET isadmin = True WHERE username=%s", [username])
             admin = is_admin(username)
-            return template('zacetna_stran.html', kategorije=kategorije, napakaO=None, username=username, admin=admin, izdelki=izdelki)
+            return template('zacetna_stran.html', kategorije=kategorije, napakaO=None, username=username, admin=admin, izdelki=izdelki, idRandIzdelek=randIzdelek[0], imeRandIzdelek=randIzdelek[1])
         else:
             admin = is_admin(username)
-            return template('zacetna_stran.html', kategorije=kategorije, napakaO="Vnesili ste napačno admin geslo.", username=username, admin=admin, izdelki=izdelki)
+            return template('zacetna_stran.html', kategorije=kategorije, napakaO="Vnesili ste napačno admin geslo.", username=username,
+                            admin=admin, izdelki=izdelki, idRandIzdelek=randIzdelek[0], imeRandIzdelek=randIzdelek[1])
     else:
         cur.execute("SELECT password FROM uporabnik WHERE username=%s", [username])
         if cur.fetchone()[0] == password_md5(password):
             cur.execute("DELETE FROM uporabnik WHERE username=%s", [username])
             response.delete_cookie('username')
-            return template('zacetna_stran.html', kategorije=kategorije, napakaO=None, username=None, admin=None, izdelki=izdelki)
+            return template('zacetna_stran.html', kategorije=kategorije, napakaO=None, username=None, admin=None, izdelki=izdelki, idRandIzdelek=randIzdelek[0], imeRandIzdelek=randIzdelek[1])
         else:
             admin = is_admin(username)
-            return template('zacetna_stran.html', kategorije=kategorije, napakaO="Vnesili ste napačno geslo.", username=username, admin=admin, izdelki=izdelki)
+            return template('zacetna_stran.html', kategorije=kategorije, napakaO="Vnesili ste napačno geslo.", username=username, admin=admin, izdelki=izdelki, idRandIzdelek=randIzdelek[0], imeRandIzdelek=randIzdelek[1])
 
 
 def vsebina_kosare():
@@ -121,8 +123,10 @@ def index():
     admin = is_admin(username)
     cur.execute("SELECT * FROM izdelek ORDER BY ocena DESC")
     izdelki = cur.fetchall()
+    cur.execute("SELECT id, ime FROM izdelek ORDER BY RANDOM() LIMIT 1")
+    randIzdelek = cur.fetchone()
     return template('zacetna_stran.html', kategorije=kategorije, napakaO=None, username=username,
-                    admin=admin, izdelki=izdelki)
+                    admin=admin, izdelki=izdelki, idRandIzdelek=randIzdelek[0], imeRandIzdelek=randIzdelek[1])
 
 
 @post('/postani_admin')
@@ -151,7 +155,7 @@ def login_post():
     else:
         # Vse je v redu, nastavimo cookie in preusmerimo na glavno stran
         response.set_cookie('username', username, path='/', secret=secret)
-        redirect("/")
+        redirect('/')
 
 
 @get("/Logout")
@@ -238,6 +242,8 @@ def kategorija(x):
 def izdelek(x):
     username = get_user()
     admin = is_admin(username)
+    cur.execute("SELECT id FROM uporabnik WHERE username=%s", [username])
+    userid = cur.fetchone()[0]
     cur.execute("SELECT * FROM izdelek WHERE id = %s", [int(x)])
     izdelek = cur.fetchall()
     cur.execute("SELECT * FROM izdelek WHERE proizvajalec=%s AND id!=%s", [izdelek[0][2], int(x)])
@@ -245,11 +251,12 @@ def izdelek(x):
     if not izdelki:
         cur.execute("SELECT * FROM izdelek WHERE kategorija=%s AND id!=%s", [izdelek[0][3], int(x)])
         izdelki = cur.fetchall()
-    cur.execute("SELECT * FROM zazeljeni WHERE izdelek = %s", [int(x)])
+    cur.execute("SELECT * FROM zazeljeni WHERE uporabnik = %s AND izdelek = %s", [userid, int(x)])
     najljubsi = cur.fetchall()
+    najljubsi = len(najljubsi) == 1
+    kosara = vsebina_kosare()
 
-    kosara = request.get_cookie('kosara', secret=secret)
-    if kosara is None:
+    if len(kosara) == 0:
         vKosari = False
     else:
         vKosari = x in kosara
@@ -286,7 +293,7 @@ def kosara():
     kosara = vsebina_kosare()
     izdelki = []
 
-    if kosara is None:
+    if len(kosara) == 0:
         napaka = 'Vaša košarica je prazna.'
         izrisi = False
     else:
@@ -310,9 +317,9 @@ def kosara():
 def nakup():
     username = get_user()
     admin = is_admin(username)
-    kosara = request.get_cookie('kosara', secret=secret)
+    kosara = vsebina_kosare()
 
-    cur.execute("SELECT * FROM izdelek WHERE id IN (" + kosara + ")")
+    cur.execute("SELECT * FROM izdelek WHERE id IN ({})".format(", ".join("%s" for _ in kosara)), tuple(kosara))
     izdelki = cur.fetchall()
 
     brez_popusta = 0
@@ -335,9 +342,9 @@ def nakup_post():
     cur.execute("SELECT * FROM nakup WHERE uporabnik_id=%s ORDER BY stevilka_racuna DESC", [userid])
     stevilka_racuna = cur.fetchone()[0]
 
-    kosara = request.get_cookie('kosara', secret=secret)
+    kosara = vsebina_kosare()
 
-    for str in kosara.split(','):   # to se pomoje da optimizirat da nimamo toliko sql poizvedb
+    for str in kosara:   # to se pomoje da optimizirat da nimamo toliko sql poizvedb
         id_izdelka = str.strip(' ')
         cur.execute("SELECT cena, popust FROM izdelek WHERE id=%s", [id_izdelka])
         cena_in_popust = cur.fetchone()
