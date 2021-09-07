@@ -242,8 +242,12 @@ def kategorija(x):
 def izdelek(x):
     username = get_user()
     admin = is_admin(username)
-    cur.execute("SELECT id FROM uporabnik WHERE username=%s", [username])
-    userid = cur.fetchone()[0]
+
+    if username is not None:
+        cur.execute("SELECT id FROM uporabnik WHERE username=%s", [username])
+        userid = cur.fetchone()[0]
+    else:
+        userid = -1
     cur.execute("SELECT * FROM izdelek WHERE id = %s", [int(x)])
     izdelek = cur.fetchall()
     cur.execute("SELECT * FROM izdelek WHERE proizvajalec=%s AND id!=%s", [izdelek[0][2], int(x)])
@@ -254,12 +258,7 @@ def izdelek(x):
     cur.execute("SELECT * FROM zazeljeni WHERE uporabnik = %s AND izdelek = %s", [userid, int(x)])
     najljubsi = cur.fetchall()
     najljubsi = len(najljubsi) == 1
-    kosara = vsebina_kosare()
-
-    if len(kosara) == 0:
-        vKosari = False
-    else:
-        vKosari = x in kosara
+    vKosari = x in vsebina_kosare()
 
     return template('Izdelek.html', x=x, napakaO=None, kategorije=kategorije, napaka=None, username=username,
                     admin=admin, izdelek=izdelek, izdelki=izdelki, najljubsi=najljubsi, vKosari=vKosari)
